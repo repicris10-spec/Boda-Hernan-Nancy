@@ -79,7 +79,24 @@ Los nombres y los cupos se editan haciendo clic directamente sobre ellos en la t
 
 ---
 
-## 5. Publicarla en internet
+## 5. Cierre automático de confirmaciones
+
+La sección "Confirmar Asistencia" tiene una cuenta regresiva propia hasta el **31 de octubre de 2026**. Al llegar esa fecha, el formulario desaparece solo y en su lugar queda un aviso de "Confirmaciones cerradas". Nadie puede registrarse después, ni siquiera quien haya dejado la página abierta desde antes.
+
+En la última semana el contador se pone en rojo para crear urgencia.
+
+Para mover la fecha, edita en `CONFIG`:
+
+```js
+fechaLimite:    "31 de Octubre de 2026",              // lo que ve el invitado
+fechaLimiteISO: "2026-10-31T23:59:59-05:00",          // el cierre real
+```
+
+Las dos deben coincidir.
+
+---
+
+## 6. Publicarla en internet
 
 La opción más simple y gratuita: entra a [app.netlify.com/drop](https://app.netlify.com/drop) y arrastra la carpeta completa. En segundos te da un link público. Desde ahí puedes conectarle un dominio propio si quieres.
 
