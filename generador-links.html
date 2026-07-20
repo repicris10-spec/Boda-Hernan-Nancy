@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generador de links — Boda Hernán &amp; Nancy</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--rosa:#C48B86;--rosa-claro:#E8CFC9;--rosa-suave:#F7EDE9;--dorado:#C9A227;--tinta:#4A3B38;--tinta-suave:#7A6763;--crema:#FDF9F6}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Montserrat',sans-serif;background:var(--crema);color:var(--tinta);padding:24px 16px 80px;line-height:1.6}
+.wrap{max-width:900px;margin:0 auto}
+h1{font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--rosa);font-weight:600;text-align:center}
+.sub{text-align:center;color:var(--tinta-suave);font-size:13px;margin:6px 0 26px}
+.panel{background:#fff;border:1px solid var(--rosa-claro);padding:20px;margin-bottom:22px;border-radius:3px}
+label{display:block;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--tinta-suave);margin-bottom:6px;font-weight:600}
+input[type=text],select{width:100%;padding:11px 12px;border:1px solid var(--rosa-claro);border-radius:2px;font-family:inherit;font-size:14px;outline:none}
+input:focus{border-color:var(--rosa)}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+.row>div{flex:1;min-width:200px}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:11px 20px;background:var(--rosa);color:#fff;border:none;border-radius:2px;font-family:inherit;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;cursor:pointer;text-decoration:none;transition:.25s;white-space:nowrap}
+.btn:hover{background:var(--tinta)}
+.btn.oro{background:var(--dorado)}
+.btn.wa{background:#25D366}
+.btn.chico{padding:7px 13px;font-size:10px;letter-spacing:1px}
+.btn.linea{background:transparent;color:var(--rosa);border:1px solid var(--rosa)}
+.btn.linea:hover{background:var(--rosa);color:#fff}
+.stats{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:22px}
+.stat{background:#fff;border:1px solid var(--rosa-claro);padding:14px 22px;text-align:center;border-radius:3px;min-width:110px}
+.stat b{display:block;font-family:'Cormorant Garamond',serif;font-size:30px;color:var(--rosa);line-height:1}
+.stat span{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--tinta-suave)}
+.grupo{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--dorado);font-weight:600;margin:26px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--rosa-claro)}
+table{width:100%;border-collapse:collapse;background:#fff;font-size:13px}
+th{background:var(--rosa-suave);text-align:left;padding:10px;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--tinta-suave);font-weight:600}
+td{padding:10px;border-top:1px solid #f0e6e2;vertical-align:middle}
+td.nom{font-weight:500;white-space:nowrap}
+td.cup{text-align:center;color:var(--rosa);font-weight:600;width:60px}
+td.lnk{font-size:11px;color:var(--tinta-suave);word-break:break-all;font-family:ui-monospace,monospace}
+td.acc{white-space:nowrap;text-align:right;width:1%}
+.aviso{background:#fff8e6;border-left:3px solid var(--dorado);padding:14px 16px;font-size:13px;margin-bottom:22px;border-radius:2px}
+.editable{border-bottom:1px dashed transparent;padding:2px 4px;border-radius:2px}
+.editable:focus{outline:none;background:var(--rosa-suave);border-bottom-color:var(--rosa)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--tinta);color:#fff;padding:12px 24px;border-radius:30px;font-size:13px;transition:.3s;z-index:99;opacity:0}
+.toast.on{transform:translateX(-50%);opacity:1}
+@media print{.panel,.btn,.acc,th:last-child{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Links de invitación personalizados</h1>
+<div class="sub">Boda de Hernán &amp; Nancy · 12 de febrero de 2027</div>
+
+<div class="aviso">
+  <b>Cómo se usa:</b> escribe abajo la dirección donde subiste la invitación y los links se generan solos.
+  Puedes editar cualquier nombre o número de cupos haciendo clic directamente sobre él en la tabla.
+</div>
+
+<div class="panel">
+  <div class="row">
+    <div>
+      <label for="base">Dirección de la invitación</label>
+      <input type="text" id="base" value="https://repicris10-spec.github.io/Boda-Hernan-Nancy/" placeholder="https://tudominio.com/invitacion/">
+    </div>
+    <div style="flex:0 0 auto">
+      <button class="btn" id="btn-csv">Descargar Excel/CSV</button>
+    </div>
+    <div style="flex:0 0 auto">
+      <button class="btn linea" id="btn-add">+ Agregar invitado</button>
+    </div>
+  </div>
+</div>
+
+<div class="stats" id="stats"></div>
+<div id="tablas"></div>
+
+</div>
+<div class="toast" id="toast">Link copiado ✓</div>
+
+<script>
+/* ==========================================================
+   LISTADO DE INVITADOS
+   Transcrito de la foto del cuaderno.
+   Edita libremente aquí o directamente en la tabla.
+   ========================================================== */
+const INVITADOS = [
+  { grupo: "Familia de Nancy", personas: [
+    { nombre: "Mamá",            cupos: 1 },
+    { nombre: "Adolfo",          cupos: 2 },
+    { nombre: "José",            cupos: 4 },
+    { nombre: "Fanny",           cupos: 4 },
+    { nombre: "Teresa",          cupos: 3 },
+    { nombre: "Albenis",         cupos: 2 },
+    { nombre: "Guillo",          cupos: 4 },
+    { nombre: "Marina",          cupos: 2 },
+    { nombre: "Ruby",            cupos: 1 },
+    { nombre: "Paola",           cupos: 2 },
+    { nombre: "Yanier",          cupos: 3 },
+    { nombre: "Ovelis",          cupos: 2 },
+    { nombre: "Andrés Esc.",     cupos: 1 },
+    { nombre: "Lili",            cupos: 1 },
+    { nombre: "María E.",        cupos: 2 }
+  ]},
+  { grupo: "Familia de Hernán", personas: [
+    { nombre: "Papá Tomás",      cupos: 2 },
+    { nombre: "Paola",           cupos: 4 },
+    { nombre: "Luis Carlos",     cupos: 2 },
+    { nombre: "Andrés",          cupos: 3 },
+    { nombre: "Salanghe",        cupos: 5 },
+    { nombre: "Yaque",           cupos: 2 },
+    { nombre: "Cristóbal",       cupos: 3 },
+    { nombre: "Adriana",         cupos: 2 },
+    { nombre: "Tío Fabio",       cupos: 2 }
+  ]},
+  { grupo: "Amigos", personas: [
+    { nombre: "Chiri",           cupos: 2 },
+    { nombre: "Leidy",           cupos: 2 },
+    { nombre: "Angy",            cupos: 1 },
+    { nombre: "Edwin",           cupos: 3 },
+    { nombre: "Amigos",          cupos: 8 }
+  ]}
+];
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function base(){
+  let b = $('#base').value.trim();
+  if (!b) b = './index.html';
+  return b;
+}
+function link(p){
+  const b = base();
+  return b + (b.includes('?') ? '&' : '?') + 'n=' + encodeURIComponent(p.nombre) + '&p=' + p.cupos;
+}
+function mensajeWa(p){
+  return `¡Hola ${p.nombre}! 💍\n\n`
+    + `Con mucha alegría te compartimos nuestra invitación de boda.\n\n`
+    + `Hernán & Nancy · 12 de febrero de 2027\n`
+    + `Centro Recreacional San Fernando, Santa Marta\n\n`
+    + `Tienes ${p.cupos} cupo${p.cupos>1?'s':''} reservado${p.cupos>1?'s':''}.\n`
+    + `Abre tu invitación aquí 👇\n${link(p)}\n\n`
+    + `Por favor confírmanos antes del 31 de octubre. ¡Te esperamos!`;
+}
+
+function pintar(){
+  let totalInv = 0, totalCupos = 0;
+
+  $('#tablas').innerHTML = INVITADOS.map((g, gi) => {
+    totalInv   += g.personas.length;
+    totalCupos += g.personas.reduce((a,p) => a + p.cupos, 0);
+    return `
+      <div class="grupo">${esc(g.grupo)} · ${g.personas.length} invitaciones · ${g.personas.reduce((a,p)=>a+p.cupos,0)} cupos</div>
+      <table>
+        <thead><tr><th>Invitado</th><th style="text-align:center">Cupos</th><th>Link</th><th></th></tr></thead>
+        <tbody>
+        ${g.personas.map((p, pi) => `
+          <tr>
+            <td class="nom"><span class="editable" contenteditable data-g="${gi}" data-p="${pi}" data-campo="nombre">${esc(p.nombre)}</span></td>
+            <td class="cup"><span class="editable" contenteditable data-g="${gi}" data-p="${pi}" data-campo="cupos">${p.cupos}</span></td>
+            <td class="lnk">${esc(link(p))}</td>
+            <td class="acc">
+              <button class="btn chico linea" data-copiar="${gi}-${pi}">Copiar</button>
+              <a class="btn chico wa" target="_blank" href="https://wa.me/?text=${encodeURIComponent(mensajeWa(p))}">WhatsApp</a>
+              <a class="btn chico oro" target="_blank" href="${esc(link(p))}">Ver</a>
+            </td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`;
+  }).join('');
+
+  $('#stats').innerHTML = `
+    <div class="stat"><b>${totalInv}</b><span>Invitaciones</span></div>
+    <div class="stat"><b>${totalCupos}</b><span>Cupos totales</span></div>
+    <div class="stat"><b>${INVITADOS.length}</b><span>Grupos</span></div>`;
+
+  document.querySelectorAll('[data-copiar]').forEach(b => {
+    b.addEventListener('click', () => {
+      const [gi, pi] = b.dataset.copiar.split('-').map(Number);
+      navigator.clipboard.writeText(link(INVITADOS[gi].personas[pi])).then(toast);
+    });
+  });
+  document.querySelectorAll('.editable').forEach(el => {
+    el.addEventListener('blur', () => {
+      const { g, p, campo } = el.dataset;
+      const v = el.textContent.trim();
+      INVITADOS[g].personas[p][campo] = campo === 'cupos' ? Math.max(1, parseInt(v,10) || 1) : v;
+      pintar();
+    });
+    el.addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); el.blur(); } });
+  });
+}
+
+function toast(){
+  const t = $('#toast'); t.classList.add('on');
+  setTimeout(() => t.classList.remove('on'), 1600);
+}
+
+$('#base').addEventListener('input', pintar);
+
+$('#btn-add').addEventListener('click', () => {
+  const nombre = prompt('Nombre del invitado:');
+  if (!nombre) return;
+  const cupos = Math.max(1, parseInt(prompt('¿Cuántos cupos?', '2'), 10) || 1);
+  const grupo = prompt('¿Grupo? (1 = Nancy, 2 = Hernán, 3 = Amigos)', '3');
+  const gi = Math.min(INVITADOS.length - 1, Math.max(0, (parseInt(grupo,10) || 3) - 1));
+  INVITADOS[gi].personas.push({ nombre: nombre.trim(), cupos });
+  pintar();
+});
+
+$('#btn-csv').addEventListener('click', () => {
+  const filas = [['Grupo','Invitado','Cupos','Link']];
+  INVITADOS.forEach(g => g.personas.forEach(p => filas.push([g.grupo, p.nombre, p.cupos, link(p)])));
+  const csv = '﻿' + filas.map(f => f.map(c => `"${String(c).replace(/"/g,'""')}"`).join(';')).join('\r\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8'}));
+  a.download = 'invitados-hernan-y-nancy.csv';
+  a.click();
+});
+
+pintar();
+</script>
+</body>
+</html>
