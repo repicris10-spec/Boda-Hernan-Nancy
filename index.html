@@ -29,8 +29,7 @@ const CONFIG = {
   tituloInvitacion: "¡Nos casamos!",
   textoInvitacion:  "Hoy elegimos reafirmar y sellar nuestro amor ante Dios, y nos encantaría que seas parte de este bendecido y maravilloso día, donde iniciaremos juntos el propósito que Él ha preparado para nuestras vidas.",
   versiculo:        "El amor es paciente, es bondadoso. El amor no es envidioso ni jactancioso ni orgulloso. No se comporta con rudeza, no es egoísta, no se enoja fácilmente, no guarda rencor.",
-  versiculoRef:     "1 Corintios 
-13:4-5",
+  versiculoRef:     "1 Corintios 13:4-5",
 
   /* ---------- LUGAR ---------- */
   lugares: [
@@ -755,11 +754,12 @@ if (CONFIG.musica){
 }
 function reproducir(){
   if (!CONFIG.musica) return;
-  audio.play().then(() => {
-    player.classList.add('on','playing');
-  }).catch(() => {
-    player.classList.add('on');
-  });
+  player.classList.add('on');
+  try{
+    const p = audio.play();
+    if (p && p.then) p.then(() => player.classList.add('playing')).catch(() => {});
+    else player.classList.add('playing');
+  }catch(e){}
 }
 player.addEventListener('click', () => {
   if (audio.paused){ audio.play(); player.classList.add('playing'); }
